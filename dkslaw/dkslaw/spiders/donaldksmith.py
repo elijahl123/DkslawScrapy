@@ -39,6 +39,8 @@ class DonaldKSmithSpider(scrapy.Spider):
         # Extract all links and follow them
         for href in response.css('a::attr(href)').getall():
             url = response.urljoin(href)
+            # Debugging: print the URL to check its correctness
+            print("Resolved URL:", url)
             if url.endswith('.htm') or url.endswith('.html') or url == self.start_urls[0]:
                 yield scrapy.Request(url, callback=self.parse_htm)
 
