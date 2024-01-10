@@ -1,7 +1,7 @@
 import os
-import re
-import scrapy
 from urllib.parse import urlparse, unquote, urljoin
+
+import scrapy
 
 
 class DonaldKSmithSpider(scrapy.Spider):
@@ -74,20 +74,3 @@ class DonaldKSmithSpider(scrapy.Spider):
         file_path = os.path.join(directory, filename)
         with open(file_path, 'wb') as file:
             file.write(response.body)
-
-        # Additional handling for CSS files
-        if filename.endswith('.css'):
-            self.parse_css(response, file_path)
-
-    def parse_css(self, response, css_file_path):
-        # Find URLs in CSS file
-        css_content = response.text
-        urls = re.findall(r'url\(([^)]+)\)', css_content)
-
-        for url in urls:
-            # Clean and join the URL
-            url = url.strip('\'"')
-            absolute_url = urljoin(response.url, url)
-
-            # Download the asset
-            yield scrapy.Request(absolute_url, callback=self.save_file)
